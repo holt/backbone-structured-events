@@ -1,4 +1,4 @@
 backbone-namespaced-events
 ==========================
 
-Dot-notation support for providing namespaced scope to Backbone events
+Dot-notation enhancement for providing namespaced scope to Backbone events and event groups
