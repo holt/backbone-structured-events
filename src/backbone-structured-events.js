@@ -1,4 +1,4 @@
-// backbone.structured.events.js v0.1.0   
+// backbone.structured.events.js v0.1.1   
 
 (function () {
 
@@ -237,6 +237,34 @@
             return this;
          },
 
+         // Trigger one or many events, firing all bound callbacks. Callbacks are
+         // passed the same arguments as `trigger` is, apart from the event name
+         // (unless you're listening on `"all"`, which will cause your callback to
+         // receive the true name of the event as the first argument).
+         trigger: function (name) {
+            if (!this._events) return this;
+            var args = slice.call(arguments, 1);
+            if (!eventsApi(this, 'trigger', name, args)) return this;
+
+            //var events = this._events[name];
+            var allEvents = this._events.all && this._events.all._events;
+            var obj = getObj(name, this._events);
+            var events = obj ? obj._events : false;
+
+            // Pass the events object to allow access to the sibling context
+            args.push(obj);
+
+            if (events) triggerEvents(events, args);
+            if (allEvents) triggerEvents(allEvents, arguments);
+            return this;
+         },
+
+         // Change the seperator character(s) used to delimit event names
+         setSeperator: function (sep) {
+            seperator = (sep && sep.toString()) || seperator;
+            return this;
+         },
+
          // Deep removal of a namespace and all of its child objects (not just the
          // the events local to the namesapce)
          destroy: function (name) {
@@ -268,32 +296,39 @@
             return this;
          },
 
-         // Change the seperator character(s) used to delimit event names
-         setSeperator: function (sep) {
-            seperator = (sep && sep.toString()) || seperator;
-            return this;
-         },
+         // Deep triggering of all events in a hierarchy, including or excluding any
+         // present on the parent object itself
+         deepTrigger: function (name) {
 
-         // Trigger one or many events, firing all bound callbacks. Callbacks are
-         // passed the same arguments as `trigger` is, apart from the event name
-         // (unless you're listening on `"all"`, which will cause your callback to
-         // receive the true name of the event as the first argument).
-         trigger: function (name) {
             if (!this._events) return this;
             var args = slice.call(arguments, 1);
-            if (!eventsApi(this, 'trigger', name, args)) return this;
+            if (!eventsApi(this, 'deepTrigger', name, args)) return this;
 
-            //var events = this._events[name];
-            var allEvents = this._events.all && this._events.all._events;
-            var obj = getObj(name, this._events);
-            var events = obj ? obj._events : false;
+            var names = name.split(seperator), wildcard = false;
+            var arr = [];
+            var trigger = false;
 
-            // Pass the events object to allow access to the sibling context
-            args.push(obj);
+            name = ("*" !== names[names.length - 1]) ? names.pop() 
+            : (wildcard = !0) && names[names.length - 2];
 
-            if (events) triggerEvents(events, args);
-            if (allEvents) triggerEvents(allEvents, arguments);
-            return this;
+            remap(this._events, function (key, value, parent, parentkey) {
+               if (key !== '_events') {
+                  if (wildcard && ((name === parentkey) || trigger)) {
+                     trigger = true;
+                     arr.push(value._events);
+                  }
+                  else if (!wildcard && ((name === key) || trigger)) {
+                     trigger = true;
+                     arr.push(value._events);
+                  }
+               }
+               return true;
+
+            });
+
+            _.each(arr, function (events) {
+               triggerEvents(events, args);
+            });
          },
 
          // An inversion-of-control version of `on`. Tell *this* object to listen to
