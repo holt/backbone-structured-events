@@ -1,4 +1,4 @@
-// backbone.structured.events.js v0.1.1   
+// backbone.structured.events.js v0.1.2   
 
 (function () {
 
@@ -312,16 +312,24 @@
             : (wildcard = !0) && names[names.length - 2];
 
             remap(this._events, function (key, value, parent, parentkey) {
+
                if (key !== '_events') {
+                  
                   if (wildcard && ((name === parentkey) || trigger)) {
                      trigger = true;
-                     arr.push(value._events);
+                     value._events && arr.push(value._events);
                   }
-                  else if (!wildcard && ((name === key) || trigger)) {
-                     trigger = true;
-                     arr.push(value._events);
+                  else if (!wildcard) {
+                     if ((name === key) || trigger) {
+                        value._events && arr.push(value._events);
+                     }
+                     else if (name === parentkey) {
+                        value._events && arr.push(value._events);
+                        trigger = true;
+                     }
                   }
                }
+
                return true;
 
             });
@@ -329,6 +337,8 @@
             _.each(arr, function (events) {
                triggerEvents(events, args);
             });
+
+            return this;
          },
 
          // An inversion-of-control version of `on`. Tell *this* object to listen to
