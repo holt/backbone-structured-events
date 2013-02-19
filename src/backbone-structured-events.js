@@ -1,4 +1,4 @@
-// backbone.structured.events.js v0.1.4  
+// backbone-structured-events.js v0.1.4  
 
 (function () {
 
