@@ -1,4 +1,4 @@
-// backbone-structured-events.js v0.1.5  
+// backbone-structured-events.js v0.1.7 
 
 (function () {
 
@@ -359,8 +359,7 @@
 
    }());
 
-   _.extend(root.Events, Events);
-   root === Backbone && _.extend(Backbone, Events);
+   root.Events ? (_.extend(root.Events, Events) 
+      && _.extend(root, Events)) : (root.__Events__ = Events);
 
-
-}.call(window.Backbone || window));
+}.call(this.Backbone || this));
