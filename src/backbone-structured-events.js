@@ -1,4 +1,4 @@
-// backbone.structured.events.js v0.1.2   
+// backbone.structured.events.js v0.1.3   
 
 (function () {
 
@@ -251,9 +251,6 @@
             var obj = getObj(name, this._events);
             var events = obj ? obj._events : false;
 
-            // Pass the events object to allow access to the sibling context
-            args.push(obj);
-
             if (events) triggerEvents(events, args);
             if (allEvents) triggerEvents(allEvents, arguments);
             return this;
@@ -306,33 +303,27 @@
 
             var names = name.split(seperator), wildcard = false;
             var arr = [];
-            var trigger = false;
+            var obj = {};
 
-            name = ("*" !== names[names.length - 1]) ? names.pop() 
+            name = ("*" !== names[names.length - 1]) 
+            ? names[names.length - 1] 
             : (wildcard = !0) && names[names.length - 2];
 
-            remap(this._events, function (key, value, parent, parentkey) {
+            // Normalize the names array if the last entry is an asterisk
+            wildcard && names.pop();
 
-               if (key !== '_events') {
-                  
-                  if (wildcard && ((name === parentkey) || trigger)) {
-                     trigger = true;
-                     value._events && arr.push(value._events);
-                  }
-                  else if (!wildcard) {
-                     if ((name === key) || trigger) {
-                        value._events && arr.push(value._events);
-                     }
-                     else if (name === parentkey) {
-                        value._events && arr.push(value._events);
-                        trigger = true;
-                     }
-                  }
-               }
+            // Grab the object matching the normalized name (if it exists)
+            if (obj = getObj(names.join('.'), this._events)) {
 
-               return true;
+               // No wildcard means add the event stack for this name too
+               !wildcard && obj._events && arr.push(obj._events);
 
-            });
+               // Iterate through child objects and add their events
+               remap(obj, function (key, value, parent, parentkey) {
+                  parentkey && key === '_events' && arr.push(value);
+                  return true;
+               });
+            }
 
             _.each(arr, function (events) {
                triggerEvents(events, args);
