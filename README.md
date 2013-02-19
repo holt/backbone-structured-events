@@ -12,7 +12,7 @@ Because the event stack is now in an ordered hierarchy, group operations are eas
 
 ## Installation ##
 
-BSE can run either as a standalone event broker or as a regression tested replacement for Backbone's internal event module. The only hard dependency is [Underscore.js](http://underscorejs.org/) which must be included in your page/app.
+BSE can run either as a standalone event broker (all methods are added to the `__Events__` object) or as a regression tested replacement for Backbone's internal `Backbone.Events` module (if detected). The only hard dependency is [Underscore.js](http://underscorejs.org/) which must be included in your page/app.
 
 ## Examples ##
 
