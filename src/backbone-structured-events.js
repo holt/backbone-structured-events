@@ -1,4 +1,4 @@
-// backbone.structured.events.js v0.1.3   
+// backbone.structured.events.js v0.1.4  
 
 (function () {
 
@@ -246,7 +246,6 @@
             var args = slice.call(arguments, 1);
             if (!eventsApi(this, 'trigger', name, args)) return this;
 
-            //var events = this._events[name];
             var allEvents = this._events.all && this._events.all._events;
             var obj = getObj(name, this._events);
             var events = obj ? obj._events : false;
@@ -301,7 +300,8 @@
             var args = slice.call(arguments, 1);
             if (!eventsApi(this, 'deepTrigger', name, args)) return this;
 
-            var names = name.split(seperator), wildcard = false;
+            var names = name.split(seperator);
+            var wildcard = false;
             var arr = [];
             var obj = {};
 
@@ -314,13 +314,9 @@
 
             // Grab the object matching the normalized name (if it exists)
             if (obj = getObj(names.join('.'), this._events)) {
-
-               // No wildcard means add the event stack for this name too
                !wildcard && obj._events && arr.push(obj._events);
-
-               // Iterate through child objects and add their events
-               remap(obj, function (key, value, parent, parentkey) {
-                  parentkey && key === '_events' && arr.push(value);
+               remap(obj, function (key, value) {
+                  value._events && arr.push(value._events);
                   return true;
                });
             }
