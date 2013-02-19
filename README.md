@@ -1,17 +1,26 @@
-backbone-structured-events
-==========================
+# backbone-structured-events #
 
-The Backbone Structured Events (BSE) extension re-orders the internally cataloged flat-list of string-defined Backbone events into an object hierarchy. We're going to turn this:
+The Backbone Structured Events (BSE) module re-orders the internally cataloged flat-list of string-defined [Backbone.js](http://backbonejs.org/) events into an object hierarchy. So, instead of something like this:
 
 ![Default Backbone Event Structure](https://raw.github.com/holt/backbone-structured-events/master/img/events-before.png)
 
-... into this:
+... you'll get something like this:
 
 ![Rejigged Backbone Event Structure](https://raw.github.com/holt/backbone-structured-events/master/img/events-after.png)
 
-... and add a few additional methods that allow us to take advantage of this structured hierarchy.
+Group operations - for example, placing wrappers around sets of events - are now easier to implement in a structured hierarchy. Consequently, the BSE library provides a few additional methods that allow us to take advantage of this new object model.
 
-    // Create an object with the Backbone.Events mixin
+## Installation ##
+
+BSE can run either as a standalone event broker or as a replacement to Backbone's internal event module. The only hard dependency is [Underscore.js](http://underscorejs.org/) which must be included in your page/app.
+
+## Examples ##
+
+All existing [Backbone Event API](http://backbonejs.org/#Events) module methods will work as expected when using BSE. The following sections describe additional methods.
+
+### `deepTrigger` ###
+
+    // Create an object with a Backbone.Events mixin
     var obj = _.extend({}, Backbone.Events);
     
     // Create some callbacks
@@ -36,11 +45,12 @@ The Backbone Structured Events (BSE) extension re-orders the internally cataloge
     obj.on('app.dialog.show.post', last);
     obj.on('app.dialog.show', show);
     
-    // Trigger all events on and under and object, all events under
+    // Deep trigger all events on and under and object, all events under
     // an object, all events on an object
-    
     obj.deepTrigger('app.dialog');        // first, second, show, last
     obj.deepTrigger('app.dialog.pre');    // first, second
     obj.deepTrigger('app.dialog.show');   // show, last
     obj.deepTrigger('app.dialog.show.*'); // last
-    obj.trigger('app.dialog.show');       // show
+
+    // Shallow trigger still works as expected
+    obj.trigger('app.dialog.show'); // show
