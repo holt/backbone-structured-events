@@ -1,6 +1,6 @@
 # backbone-structured-events #
 
-By default, the [Backbone.js](http://backbonejs.org/) Event module catalogs the bound callbacks on an object as a flat list of keypair values. Using an example set of dot-notation delimited event names, it produces something like this:
+By default, the [Backbone.js](http://backbonejs.org/) Event module stores the callbacks bound to an object as a flat list of keypair values. Using a set of dot-notation delimited event names as an example, the event catalog looks something like this:
 
 ![Default Backbone Event Structure](https://raw.github.com/holt/backbone-structured-events/master/img/events-before.png)
 
@@ -18,7 +18,7 @@ BSE can run either as a standalone event broker or as a regression tested replac
 
 All existing [Backbone Event API](http://backbonejs.org/#Events) module methods will work as expected when using BSE. The following sections describe additional methods.
 
-### `.deepTrigger()` ###
+#### `.deepTrigger()` ####
 
     // Create an object with a Backbone.Events mixin
     var obj = _.extend({}, Backbone.Events);
@@ -56,7 +56,7 @@ All existing [Backbone Event API](http://backbonejs.org/#Events) module methods 
     obj.trigger('app.dialog.show'); // show
 
 
-### `.destroy()` ###
+#### `.destroy()` ####
 
     // Retains events on app.dialog.show, but unbinds all child events
     obj.destroy('app.dialog.show.*'); 
@@ -69,7 +69,7 @@ All existing [Backbone Event API](http://backbonejs.org/#Events) module methods 
     obj.off('app.dialog.show'); 
 
 
-### `.setSeperator()` ##
+#### `.setSeperator()` ####
 
     // Create an object with the Backbone.Events mixin
     var obj = _.extend({}, Backbone.Events)

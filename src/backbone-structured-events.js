@@ -1,4 +1,4 @@
-// backbone-structured-events.js v0.1.4  
+// backbone-structured-events.js v0.1.5  
 
 (function () {
 
@@ -341,20 +341,16 @@
          // Tell this object to stop listening to either specific events ... or
          // to every object it's currently listening to.
          stopListening: function (obj, name, callback) {
-
             var listeners = this._listeners;
             if (!listeners) return this;
-            if (obj) {
-               obj.off(name, typeof name === 'object' ? this : callback, this);
-               if (!name && !callback) delete listeners[obj._listenerId];
-            } else {
-               if (typeof name === 'object') callback = this;
-               for (var id in listeners) {
-                  if (listeners.hasOwnProperty(id)) {
-                     listeners[id].off(name, callback, this);
-                  }
+            var deleteListener = !name && !callback;
+            if (typeof name === 'object') callback = this;
+            if (obj) {(listeners = {})[obj._listenerId] = obj; }
+            for (var id in listeners) {
+               if (listeners.hasOwnProperty(id)) {
+                  listeners[id].off(name, callback, this);
+                  if (deleteListener) delete this._listeners[id];
                }
-               this._listeners = {};
             }
             return this;
          }
@@ -363,6 +359,8 @@
 
    }());
 
-   root.Events = Events;
+   _.extend(root.Events, Events);
+   root === Backbone && _.extend(Backbone, Events);
 
-}.call(Backbone));
+
+}.call(window.Backbone || window));
