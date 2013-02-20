@@ -40,7 +40,7 @@ Create some callbacks:
        return this;
     };
     
-Bind some events; this can happen in no particular order as the object structure is created or extended deterministically:
+Bind some events - this can happen in no particular order as the object structure is created or extended deterministically:
 
     obj.on('app.dialog.pre.first', first);
     obj.on('app.dialog.pre.second', second);
@@ -49,9 +49,9 @@ Bind some events; this can happen in no particular order as the object structure
     
 Use `.deepTrigger()` to fire events that are:
 
-* on _and_ under an object
-* under an object
 * on an object
+* under an object
+* on _and_ under an object
 
 Some examples:
 
@@ -60,7 +60,7 @@ Some examples:
     obj.deepTrigger('app.dialog.show');   // show, last
     obj.deepTrigger('app.dialog.show.*'); // last
 
-Standard `.trigger()` still works as expected:
+Standard `.trigger()` still works as expected by firing all events on an object, but *without* firing any child events:
 
     obj.trigger('app.dialog.show'); // show
 
@@ -74,7 +74,7 @@ Unbind *all* events, including child events, on object:
     
     obj.destroy('app.dialog.show'); 
     
-Standard `.off()` still works as expected. Unbinding all events on an object *without* unbinding any child events:
+Standard `.off()` still works as expected by unbinding all events on an object, but *without* unbinding any child events:
     
     obj.off('app.dialog.show'); 
 
