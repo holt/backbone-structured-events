@@ -48,9 +48,12 @@ Bind some events; this can happen in no particular order as the object structure
     obj.on('app.dialog.show', show);
     
 Use `.deepTrigger()` to fire events that are:
-  * on *and* under an object
-  * under an object
-  * on an object
+
+* on _and_ under an object
+* under an object
+* on an object
+
+Some examples:
 
     obj.deepTrigger('app.dialog');        // first, second, show, last
     obj.deepTrigger('app.dialog.pre');    // first, second
