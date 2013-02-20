@@ -18,12 +18,14 @@ BSE can run either as a standalone event broker (all methods are added to the `_
 
 All existing [Backbone Event API](http://backbonejs.org/#Events) module methods will work as expected when using BSE. The following sections describe additional methods.
 
-#### `.deepTrigger()` ####
+#### .deepTrigger() ####
 
-    // Create an object with a Backbone.Events mixin
+Create an object with a `Backbone.Events` mixin:
+
     var obj = _.extend({}, Backbone.Events);
     
-    // Create some callbacks
+Create some callbacks:
+
     var first = function () {
        console.log('First:  pre-initialization event...');
        return this;
@@ -38,47 +40,46 @@ All existing [Backbone Event API](http://backbonejs.org/#Events) module methods 
        return this;
     };
     
-    // Bind some events - this can happen in no particular order as the
-    // object structure is created or extended deterministically
+Bind some events; this can happen in no particular order as the object structure is created or extended deterministically:
+
     obj.on('app.dialog.pre.first', first);
     obj.on('app.dialog.pre.second', second);
     obj.on('app.dialog.show.last', last);
     obj.on('app.dialog.show', show);
     
-    // Deep trigger all events on and under and object, all events under
-    // an object, all events on an object
+Deep trigger all events:
+- on *and* under an object
+- under an object
+- on an object
+
+
     obj.deepTrigger('app.dialog');        // first, second, show, last
     obj.deepTrigger('app.dialog.pre');    // first, second
     obj.deepTrigger('app.dialog.show');   // show, last
     obj.deepTrigger('app.dialog.show.*'); // last
 
-    // Standard .trigger() still works as expected
+Standard `.trigger()` still works as expected:
+
     obj.trigger('app.dialog.show'); // show
 
 
-#### `.destroy()` ####
+#### .destroy() ####
 
-    // Retains events on app.dialog.show, but unbinds all child events
+Unbind all *child* events on an object:
+
     obj.destroy('app.dialog.show.*'); 
     
-    // Unbinds all events on app.dialog.show and all child events
+Unbind *all* events on object:
+    
     obj.destroy('app.dialog.show'); 
     
-    // Standard .off() still works as expected by unbinding all events on
-    // app.dialog.show without unbinding any child events
+Standard `.off()` still works as expected. Unbinding all events on an object *without* unbinding any child events:
+    
     obj.off('app.dialog.show'); 
 
 
-#### `.setSeperator()` ####
+#### .setSeperator() ####
+    
+The default seperator is a period `.` but you can change it to something else: 
 
-    // Create an object with the Backbone.Events mixin
-    var obj = _.extend({}, Backbone.Events)
-    
-    // The default seperator is a period; change it to something else using
-    // this method 
     obj.setSeperator('-');
-    
-    obj.on('app-dialog-show', function () {
-       console.log('Show: dialog is displayed...');
-       return this;
-    });
