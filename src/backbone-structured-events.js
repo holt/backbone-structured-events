@@ -1,4 +1,4 @@
-// backbone-structured-events.js v0.1.7 
+// backbone-structured-events.js v0.1.8  
 
 (function () {
 
@@ -274,21 +274,16 @@
             }
 
             var names = name.split(seperator), wildcard = false;
-
             name = ("*" !== names[names.length - 1]) ? names.pop() 
             : (wildcard = !0) && names[names.length - 2];
-
-            if (wildcard) {
-               this._events = remap(this._events, function (key, value, parent, parentkey) {
+            this._events = remap(this._events, function (key, value, parent, parentkey) {
+               if (wildcard) {
                   return (name === parentkey && key !== '_events') ? false : true;
-               });
-            }
-            else {
-               this._events = remap(this._events, function (key) {
+               }  
+               else {
                   return (name === key) ? false : true;
-               });
-            }
-
+               }
+            });
             return this;
          },
 
@@ -359,7 +354,13 @@
 
    }());
 
-   root.Events ? (_.extend(root.Events, Events) 
-      && _.extend(root, Events)) : (root.__Events__ = Events);
+   if (root.Backbone) {
+      _.extend(root.Backbone.Events, Events);
+      _.extend(root.Backbone, Events);
 
-}.call(this.Backbone || this));
+   }
+   else {
+      root.__Events__ = Events
+   }
+
+}).call(this);
