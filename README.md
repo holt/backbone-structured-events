@@ -8,11 +8,11 @@ The Backbone Structured Events (BSE) module organizes delimited-name events such
 
 ![Rejigged Backbone Event Structure](https://raw.github.com/holt/backbone-structured-events/master/img/events-after.png)
 
-Because the event stack is now in an ordered hierarchy, group operations are easier to implement; for example, binding, unbinding, or placing common wrappers around groups of events. To illustrate this, the BSE library provides a few additional methods that allow us to take advantage of this new object model.
+Because the event stack is now an ordered object hierarchy, group operations are easier to implement; for example, binding, unbinding, or adding wrappers around common groups of events. To illustrate this, the BSE library provides a few additional methods that allow us to take advantage of this new object model.
 
 ## Installation ##
 
-BSE can run either as a standalone event broker (all methods are added to the `__Events__` object) or as a regression tested replacement for Backbone's internal `Backbone.Events` module (if detected). The only hard dependency is [Underscore.js](http://underscorejs.org/) which must be included in your page/app.
+BSE can run either as a standalone event broker (all methods are added to a global `__Events__` object) or as a regression tested replacement for Backbone's internal `Backbone.Events` module (if detected). The only hard dependency is [Underscore.js](http://underscorejs.org/) which must be included in your page/app.
 
 ## Examples ##
 
@@ -47,7 +47,7 @@ Bind some events; this can happen in no particular order as the object structure
     obj.on('app.dialog.show.last', last);
     obj.on('app.dialog.show', show);
     
-Deep trigger all events:
+Deep trigger events that are:
 - on *and* under an object
 - under an object
 - on an object
@@ -69,7 +69,7 @@ Unbind all *child* events on an object:
 
     obj.destroy('app.dialog.show.*'); 
     
-Unbind *all* events on object:
+Unbind *all* events, including child events, on object:
     
     obj.destroy('app.dialog.show'); 
     
